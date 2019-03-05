@@ -2,7 +2,7 @@
 #include <unistd.h> 
 #include <stdio.h>
 #define DLUGOSC_WIADOMOSCI 256
-#define UPRAWNIENIA 0711
+#define UPRAWNIENIA 0777
 
 void sprawdzDostepnosc() {	
 	while (open("lockfile",O_CREAT|O_EXCL,0)==-1) {
@@ -28,7 +28,7 @@ void czytaj() {
    }
 }
 
-void pisz() {
+void pisz(char *uzytkownik) {
 	int dane;
 	char pytanie[DLUGOSC_WIADOMOSCI] = "";
 	char c;
@@ -44,18 +44,20 @@ void pisz() {
 				pytanie[i] = c;
 				i++;
 			}
-				
+			pytanie[i] = '-';
+			i++;
+			
 			write(dane,pytanie,i);
+			write(dane,uzytkownik, DLUGOSC_WIADOMOSCI);
 			close(dane);
 			break;
 		}
 	}
 }
 
-int main() {
-	
+int main( int argc, char *argv[] ) {
 	sprawdzDostepnosc();
-	pisz();
+	pisz(argv[1]);
 	czytaj();
 	wyczyscBufor();
 
