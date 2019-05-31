@@ -28,10 +28,6 @@ int currentColor;
 int tmpColor, tmpAction;
 int tmpX, tmpY;
 
-// LINIA 1
-// PROSTOKAT 2
-// GUMKA 3
-
 void end()
 
 {
@@ -73,7 +69,8 @@ void *reader(void *argum)
 		 
 		 XSetForeground(mydisplay,mygc,colors[tmpColor].pixel);
 		 
-            pthread_mutex_lock(&lock);
+            if(buf->x > 120) {
+				pthread_mutex_lock(&lock);
             if (buf->prev==0)
             {
                xr1=buf->x;
@@ -136,9 +133,35 @@ void *reader(void *argum)
 					points[3].y = yr - 5;
 					XFillPolygon(mydisplay, mywindow, mygc, points, 4, Complex, CoordModeOrigin);
 			   }
+			   if(tmpAction == 4)
+			   {
+				    if (tmpX >= xr)
+            {
+                if (tmpY >= yr)
+                {
+                    XDrawArc(mydisplay, mywindow, mygc, xr, yr, abs(xr - tmpX), abs(yr - tmpY), 360*64, 360*64);
+                }
+                else if (tmpY < yr)
+                {
+                    XDrawArc(mydisplay, mywindow, mygc, xr, tmpY, abs(xr - tmpX), abs(yr - tmpY), 360*64, 360*64);
+                }
+            }
+            else if (tmpX < xr)
+            {
+                if (tmpY >= yr)
+                {
+                    XDrawArc(mydisplay, mywindow, mygc, tmpX, yr, abs(xr - tmpX), abs(yr - tmpY), 360*64, 360*64);
+                }
+                else if (tmpY < yr)
+                {
+                    XDrawArc(mydisplay, mywindow, mygc, tmpX, tmpY, abs(xr - tmpX), abs(yr - tmpY), 360*64, 360*64);
+                }
+            }
+			   }
 			   XFlush(mydisplay);
 			}
             pthread_mutex_unlock(&lock);
+			}
          
       }
    }
@@ -220,6 +243,9 @@ main()
 			   XFillRectangle(mydisplay, mywindow, mygc, 0, 105, 50, 30);
 			   
 			   XSetForeground(mydisplay,mygc,colors[0].pixel);
+			   XFillRectangle(mydisplay, mywindow, mygc, 0, 140, 50, 30);
+			   
+			   XSetForeground(mydisplay,mygc,colors[0].pixel);
 			   XFillRectangle(mydisplay, mywindow, mygc, 0, 230, 20, 20);
 			   
 			   XSetForeground(mydisplay,mygc,colors[4].pixel);
@@ -256,6 +282,9 @@ main()
 			   XSetForeground(mydisplay,mygc,colors[2].pixel);
 			   XDrawString(mydisplay, mywindow, mygc, 10, 125, "Gumka", 5);
 			   
+			   XSetForeground(mydisplay,mygc,colors[2].pixel);
+			   XDrawString(mydisplay, mywindow, mygc, 10, 160, "Elipsa", 6);
+			   
 			   XDrawString(mydisplay, mywindow, mygc, 10, 200, "Kolory", 6);
 			 break;
          
@@ -285,6 +314,10 @@ main()
 			 
 			 if(bufw->x >= 0 && bufw->x <= 50 && bufw->y >=105 && bufw->y <= 135) {
 				 toDo = 3;
+			 }
+			 
+			 if(bufw->x >= 0 && bufw->x <= 50 && bufw->y >=140 && bufw->y <= 170) {
+				 toDo = 4;
 			 }
 			 
 			 if(toDo == 3)
