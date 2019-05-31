@@ -3,6 +3,7 @@
 #include <sys/msg.h>
 #include <sys/ipc.h>
 #include <string.h>
+#include <signal.h>
 #define ILOSC_SLOW 5
 
 typedef struct {
@@ -14,6 +15,8 @@ typedef struct {
 	char *slowoPL;
 	char *slowoANG;
 } SLOWNIK;
+
+int input, output;
 
 void zaladujSlownik(SLOWNIK* slownik) {
 	slownik[0].slowoPL = "monitor";
@@ -40,18 +43,25 @@ int znajdz(SLOWNIK* slownik, const char *slowo) {
 	return 0;
 }
 
+void sighandler() {
+	msgctl(input, IPC_RMID, 0);
+	msgctl(output, IPC_RMID, 0);
+	exit(0);
+}
+
 int main() {
     WIADOMOSC wiadomosc;
 	SLOWNIK slownik[ILOSC_SLOW];
 
 	zaladujSlownik(slownik);
 
-    int input, output;
 	int key = 1111;
 	int key2 = 2222;
 
     input = msgget(key, 0777|IPC_CREAT);
 	output = msgget(key2, 0777|IPC_CREAT);
+	
+	signal(SIGUSR1, sighandler);
 	
 	while(1) {
       	if(msgrcv(input, &wiadomosc, 255, 0, 0) > 0) {
@@ -66,8 +76,6 @@ int main() {
 		}
 	}
 	
-	msgctl(input, IPC_RMID, 0);
-	msgctl(output, IPC_RMID, 0);
 	
 	return 0;
 } 
