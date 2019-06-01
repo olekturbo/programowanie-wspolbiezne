@@ -19,7 +19,7 @@ Colormap mycolormap;
 XColor colors[10],dummy;
 XEvent myevent;
 pthread_t tid,tid1;
-struct buffer {int x;int y;int action;int prev; int color;};
+struct buffer {struct p{int x; int y;} p;int action;int prev; int color;};
 int bufsize;
 int p;
 pthread_mutex_t lock=PTHREAD_MUTEX_INITIALIZER;
@@ -55,20 +55,20 @@ void *reader(void *argum)
 		 
 		 XSetForeground(mydisplay,mygc,colors[tmpColor].pixel);
 		 
-            if(buf->x > 120) {
+            if(buf->p.x > 120) {
 				pthread_mutex_lock(&lock);
             if (buf->prev==0)
             {
-               xr1=buf->x;
-               yr1=buf->y;
+               xr1=buf->p.x;
+               yr1=buf->p.y;
 			   tmpX = xr1;
 			   tmpY = yr1;
 			   
             }
             else  if (buf->prev==1)
             {
-               xr=buf->x;
-               yr=buf->y;
+               xr=buf->p.x;
+               yr=buf->p.y;
                if(tmpAction == 0 || tmpAction == 3) 
                {
 				   XFillRectangle(mydisplay, mywindow, mygc, xr - 3, yr - 3, 3, 3);
@@ -79,8 +79,8 @@ void *reader(void *argum)
             }
             else if (buf->prev==2)
             {
-			   xr=buf->x;
-               yr=buf->y;
+			   xr=buf->p.x;
+               yr=buf->p.y;
 			   if(tmpAction == 2)
                {
 				   if (tmpX >= xr)
@@ -153,7 +153,7 @@ void *reader(void *argum)
    }
 }      
 
-main()
+int main()
 
 {
    int xw,yw,xw1,yw1;
@@ -281,28 +281,28 @@ main()
               yw1=myevent.xbutton.y;
 
    
-              bufw->x=xw1;
-              bufw->y=yw1;
+              bufw->p.x=xw1;
+              bufw->p.y=yw1;
               bufw->prev=0;
               
                        //akcje
-		     if(bufw->x >= 0 && bufw->x <= 50 && bufw->y >=0 && bufw->y <= 30) {
+		     if(bufw->p.x >= 0 && bufw->p.x <= 50 && bufw->p.y >=0 && bufw->p.y <= 30) {
 				 toDo = 0;
 			 }
 			 
-			 if(bufw->x >= 0 && bufw->x <= 50 && bufw->y >=35 && bufw->y <= 65) {
+			 if(bufw->p.x >= 0 && bufw->p.x <= 50 && bufw->p.y >=35 && bufw->p.y <= 65) {
 				 toDo = 1;
 			 }
 			 
-			 if(bufw->x >= 0 && bufw->x <= 70 && bufw->y >=70 && bufw->y <= 100) {
+			 if(bufw->p.x >= 0 && bufw->p.x <= 70 && bufw->p.y >=70 && bufw->p.y <= 100) {
 				 toDo = 2;
 			 }
 			 
-			 if(bufw->x >= 0 && bufw->x <= 50 && bufw->y >=105 && bufw->y <= 135) {
+			 if(bufw->p.x >= 0 && bufw->p.x <= 50 && bufw->p.y >=105 && bufw->p.y <= 135) {
 				 toDo = 3;
 			 }
 			 
-			 if(bufw->x >= 0 && bufw->x <= 50 && bufw->y >=140 && bufw->y <= 170) {
+			 if(bufw->p.x >= 0 && bufw->p.x <= 50 && bufw->p.y >=140 && bufw->p.y <= 170) {
 				 toDo = 4;
 			 }
 			 
@@ -312,35 +312,35 @@ main()
 			 }
               
               		 //kolory
-			 if(bufw->x >= 0 && bufw->x <= 20 && bufw->y >=230 && bufw->y <= 250) {
+			 if(bufw->p.x >= 0 && bufw->p.x <= 20 && bufw->p.y >=230 && bufw->p.y <= 250) {
 				 currentColor = 0;
 			 }
 			 
-			 if(bufw->x >= 0 && bufw->x <= 20 && bufw->y >=260 && bufw->y <= 290) {
+			 if(bufw->p.x >= 0 && bufw->p.x <= 20 && bufw->p.y >=260 && bufw->p.y <= 290) {
 				 currentColor = 4;
 			 }
 			 
-			 if(bufw->x >= 30 && bufw->x <= 50 && bufw->y >=230 && bufw->y <= 250) {
+			 if(bufw->p.x >= 30 && bufw->p.x <= 50 && bufw->p.y >=230 && bufw->p.y <= 250) {
 				 currentColor = 1;
 			 }
 			 
-			 if(bufw->x >= 30 && bufw->x <= 50 && bufw->y >=260 && bufw->y <= 290) {
+			 if(bufw->p.x >= 30 && bufw->p.x <= 50 && bufw->p.y >=260 && bufw->p.y <= 290) {
 				 currentColor = 5;
 			 }
 			 
-			 if(bufw->x >= 60 && bufw->x <= 80 && bufw->y >=230 && bufw->y <= 250) {
+			 if(bufw->p.x >= 60 && bufw->p.x <= 80 && bufw->p.y >=230 && bufw->p.y <= 250) {
 				 currentColor = 2;
 			 }
 			 
-			 if(bufw->x >= 60 && bufw->x <= 80 && bufw->y >=260 && bufw->y <= 290) {
+			 if(bufw->p.x >= 60 && bufw->p.x <= 80 && bufw->p.y >=260 && bufw->p.y <= 290) {
 				 currentColor = 6;
 			 }
 			 
-			 if(bufw->x >= 90 && bufw->x <= 110 && bufw->y >=230 && bufw->y <= 250) {
+			 if(bufw->p.x >= 90 && bufw->p.x <= 110 && bufw->p.y >=230 && bufw->p.y <= 250) {
 				currentColor = 3;
 			 }
 			 
-			  if(bufw->x >= 90 && bufw->x <= 110 && bufw->y >=260 && bufw->y <= 290) {
+			  if(bufw->p.x >= 90 && bufw->p.x <= 110 && bufw->p.y >=260 && bufw->p.y <= 290) {
 				currentColor = 7;
 			 }
 			 
@@ -357,8 +357,8 @@ main()
               yw=myevent.xmotion.y;
 
 
-              bufw->x=xw;
-              bufw->y=yw;
+              bufw->p.x=xw;
+              bufw->p.y=yw;
               bufw->prev=1;
               write(fdw,bufw,bufsize);
 
@@ -382,8 +382,8 @@ main()
               yw1=myevent.xbutton.y;
    
    
-              bufw->x=xw1;
-              bufw->y=yw1;
+              bufw->p.x=xw1;
+              bufw->p.y=yw1;
               bufw->prev=2;
               write(fdw,bufw,bufsize);
               break;
