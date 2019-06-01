@@ -197,6 +197,7 @@ int main()
    XAllocNamedColor(mydisplay,mycolormap,"white",&colors[8],&dummy);
    XAllocNamedColor(mydisplay,mycolormap,"aqua",&colors[9],&dummy);
    
+   XStoreName(mydisplay,mywindow,"Mini Paint");
    XMapWindow(mydisplay,mywindow);
    
    mygc = DefaultGC(mydisplay,myscreen);
