@@ -19,7 +19,7 @@ Colormap mycolormap;
 XColor colors[10],dummy;
 XEvent myevent;
 pthread_t tid,tid1;
-struct buffer {struct p{int x; int y;} p;int action;int prev; int color;};
+struct buffer {struct p{int x; int y;} p;int action;int prev; int color; int pid;};
 int bufsize;
 int p;
 pthread_mutex_t lock=PTHREAD_MUTEX_INITIALIZER;
@@ -54,7 +54,8 @@ void *reader(void *argum)
 		  
 		 
 		 XSetForeground(mydisplay,mygc,colors[tmpColor].pixel);
-		 
+		 printf("%d", buf->pid);
+		 if (((buf->pid==p)&&(argum!=NULL))||((buf->pid!=p)&&(argum==NULL))) {
             if(buf->p.x > 120) {
 				pthread_mutex_lock(&lock);
             if (buf->prev==0)
@@ -148,6 +149,8 @@ void *reader(void *argum)
 			}
             pthread_mutex_unlock(&lock);
 			}
+			
+		}
          
       }
    }
@@ -162,6 +165,7 @@ int main()
    
    bufsize=sizeof(struct buffer);
    bufw=(struct buffer *) malloc(bufsize);
+   p=getpid();
 
    XInitThreads();
    mydisplay = XOpenDisplay("");
@@ -284,6 +288,7 @@ int main()
               bufw->p.x=xw1;
               bufw->p.y=yw1;
               bufw->prev=0;
+              bufw->pid=p;
               
                        //akcje
 		     if(bufw->p.x >= 0 && bufw->p.x <= 50 && bufw->p.y >=0 && bufw->p.y <= 30) {
@@ -360,6 +365,7 @@ int main()
               bufw->p.x=xw;
               bufw->p.y=yw;
               bufw->prev=1;
+              bufw->pid=p;
               write(fdw,bufw,bufsize);
 
               xw1=xw;
@@ -385,6 +391,7 @@ int main()
               bufw->p.x=xw1;
               bufw->p.y=yw1;
               bufw->prev=2;
+              bufw->pid=p;
               write(fdw,bufw,bufsize);
               break;
               
