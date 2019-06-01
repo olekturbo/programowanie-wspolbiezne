@@ -48,23 +48,9 @@ void *reader(void *argum)
 	   
       if (read(fd,buf,bufsize)>0)
       {
-		  if(buf->color!=NULL)
-		  {
-			  tmpColor = buf->color;
-		  }
-		  else
-		  {
-			  tmpColor = currentColor;
-		  }
+		  tmpColor = buf->color;
 		  
-		  if(buf->action!=NULL)
-		  {
-			  tmpAction = buf->action;
-		  }
-		  else
-		  {
-			  tmpAction = toDo;
-		  }
+		  tmpAction = buf->action;
 		  
 		 
 		 XSetForeground(mydisplay,mygc,colors[tmpColor].pixel);
